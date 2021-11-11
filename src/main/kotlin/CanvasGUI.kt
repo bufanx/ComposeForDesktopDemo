@@ -79,6 +79,7 @@ fun main() = application {
     val square = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\square.png")) }
     val reset = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\reset.png")) }
     val clear = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\clear.png")) }
+    val line = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\line.png")) }
     shape.plus(MyShape(0f,0f,0f,0f, Color.Black, type))
     // 存储图形
     val myShape = MyShape(0f,0f,0f,0f, Color.Black, type)
@@ -154,6 +155,17 @@ fun main() = application {
                         IconButton(
                             modifier = Modifier.height(30.dp).width(30.dp),
                             onClick = {
+                                type = "line"
+                            },
+                            content = {
+                                Icon(line,
+                                    contentDescription = null,
+                                    modifier = Modifier.height(20.dp).width(20.dp))
+                            }
+                        )
+                        IconButton(
+                            modifier = Modifier.height(30.dp).width(30.dp),
+                            onClick = {
                                 if (shape.size > 0)
                                     shape.removeLast()
                                 change = !change
@@ -169,6 +181,10 @@ fun main() = application {
                         IconButton(
                             modifier = Modifier.height(30.dp).width(30.dp),
                             onClick = {
+                                shaping.x = 0f
+                                shaping.y = 0f
+                                shaping.width = 0f
+                                shaping.height = 0f
                                 if (shape.size > 0)
                                     shape.removeAll(shape)
                                 change = !change
@@ -189,8 +205,13 @@ fun main() = application {
                                 if(start){
                                     val width = abs(shaping.x - it.x)
                                     val height = abs(shaping.y - it.y)
-                                    shaping.height = height
-                                    shaping.width = width
+                                    if(type == "line"){
+                                        shaping.width = it.x
+                                        shaping.height = it.y
+                                    }else{
+                                        shaping.height = height
+                                        shaping.width = width
+                                    }
                                     change = !change
                                     if (change) padding.value = 0.00002.dp
                                     else padding.value = 0.0001.dp
@@ -200,6 +221,9 @@ fun main() = application {
                             onExit = {
                                 shaping.width = 0f
                                 shaping.height = 0f
+                                shaping.x = 0f
+                                shaping.y = 0f
+                                start = false
                                 false
                             }
                         )
@@ -223,8 +247,13 @@ fun main() = application {
                                     start = false
                                     val width = abs(it.x - myShape.x)
                                     val height = abs(it.y - myShape.y)
-                                    myShape.width = width
-                                    myShape.height = height
+                                    if(type == "line"){
+                                        myShape.width = it.x
+                                        myShape.height = it.y
+                                    }else{
+                                        myShape.height = height
+                                        myShape.width = width
+                                    }
                                     shape.add(MyShape(myShape.x, myShape.y, myShape.width, myShape.height, color.value, type))
                                     change = !change
                                     if (change) padding.value = 0.00002.dp
@@ -261,6 +290,11 @@ fun main() = application {
                                     start = Offset(shaping.x + shaping.width / 2, shaping.y),
                                     end = Offset(shaping.x + shaping.width, shaping.y + shaping.height))
                             }
+                            "line" -> {
+                                drawLine(shaping.color,
+                                start = Offset(shaping.x, shaping.y),
+                                end = Offset(shaping.width, shaping.height))
+                            }
                             else -> {
                             }
                         }
@@ -290,11 +324,12 @@ fun main() = application {
                                         start = Offset(it.x + it.width / 2, it.y),
                                         end = Offset(it.x + it.width, it.y + it.height))
                                 }
+                                "line" -> {
+                                    drawLine(it.color,
+                                        start = Offset(it.x, it.y),
+                                        end = Offset(it.width, it.height))
+                                }
                                 else -> {
-                                    drawRect(it.color,
-                                        topLeft = Offset(it.x, it.y),
-                                        size = Size(it.width, it.height),
-                                        style = Stroke())
                                 }
                             }
                         }
