@@ -23,6 +23,7 @@ import androidx.compose.ui.Alignment
 
 import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
@@ -66,8 +67,8 @@ import kotlin.math.abs
 @OptIn(ExperimentalComposeUiApi::class)
 fun main() = application {
     // 窗口大小
-    val height = 450
-    val width = 600
+    val height = 650
+    val width = 800
     // 图形类型
     var type = "square"
     // 图形列表
@@ -80,6 +81,7 @@ fun main() = application {
     val reset = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\reset.png")) }
     val clear = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\clear.png")) }
     val line = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\line.png")) }
+    val roundRec = remember { imageFormFile(File("C:\\Users\\bufanx\\IdeaProjects\\compose_test\\src\\main\\resources\\roundRec.png")) }
     shape.plus(MyShape(0f,0f,0f,0f, Color.Black, type))
     // 存储图形
     val myShape = MyShape(0f,0f,0f,0f, Color.Black, type)
@@ -108,8 +110,14 @@ fun main() = application {
                             onClick = { color.value = Color.Yellow },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Yellow)){}
                         Button(modifier = Modifier.height(20.dp).width(20.dp),
+                            onClick = { color.value = Color.White },
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.White)){}
+                        Button(modifier = Modifier.height(20.dp).width(20.dp),
                             onClick = { color.value = Color.Black },
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Black)){}
+                        Button(modifier = Modifier.height(20.dp).width(20.dp),
+                            onClick = { color.value = Color.DarkGray},
+                            colors = ButtonDefaults.buttonColors(backgroundColor = Color.DarkGray)){}
                         Button(modifier = Modifier.height(20.dp).width(20.dp),
                             onClick = { color.value = Color.Magenta},
                             colors = ButtonDefaults.buttonColors(backgroundColor = Color.Magenta)){}
@@ -159,6 +167,17 @@ fun main() = application {
                             },
                             content = {
                                 Icon(line,
+                                    contentDescription = null,
+                                    modifier = Modifier.height(20.dp).width(20.dp))
+                            }
+                        )
+                        IconButton(
+                            modifier = Modifier.height(30.dp).width(30.dp),
+                            onClick = {
+                                type = "roundRec"
+                            },
+                            content = {
+                                Icon(roundRec,
                                     contentDescription = null,
                                     modifier = Modifier.height(20.dp).width(20.dp))
                             }
@@ -254,6 +273,10 @@ fun main() = application {
                                         myShape.height = height
                                         myShape.width = width
                                     }
+                                    shaping.x = 0f
+                                    shaping.y = 0f
+                                    shaping.width = 0f
+                                    shaping.height = 0f
                                     shape.add(MyShape(myShape.x, myShape.y, myShape.width, myShape.height, color.value, type))
                                     change = !change
                                     if (change) padding.value = 0.00002.dp
@@ -295,6 +318,13 @@ fun main() = application {
                                 start = Offset(shaping.x, shaping.y),
                                 end = Offset(shaping.width, shaping.height))
                             }
+                            "roundRec" -> {
+                                drawRoundRect(shaping.color,
+                                    topLeft = Offset(shaping.x, shaping.y),
+                                    size = Size(shaping.width, shaping.height),
+                                    style = Stroke(),
+                                    cornerRadius = CornerRadius(10f,10f))
+                            }
                             else -> {
                             }
                         }
@@ -328,6 +358,13 @@ fun main() = application {
                                     drawLine(it.color,
                                         start = Offset(it.x, it.y),
                                         end = Offset(it.width, it.height))
+                                }
+                                "roundRec" -> {
+                                    drawRoundRect(it.color,
+                                        topLeft = Offset(it.x, it.y),
+                                        size = Size(it.width, it.height),
+                                        style = Stroke(),
+                                        cornerRadius = CornerRadius(10f,10f))
                                 }
                                 else -> {
                                 }
